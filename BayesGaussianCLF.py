@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from typing import Union, Optional
+from typing import Optional
 from mlxtend.plotting import plot_decision_regions
 
 
@@ -13,7 +13,7 @@ class BayesGaussianCLF:
         self.x_mean = None
         self.x_std = None
 
-    def fit(self, x: Union[pd.DataFrame, np.array], y: Union[pd.Series, np.array]) -> None:
+    def fit(self, x: pd.DataFrame, y: pd.Series) -> None:
         classes, cls_count = np.unique(y, return_counts=True)
         n_classes = len(classes)
         self.priors = cls_count / len(y)
@@ -27,7 +27,7 @@ class BayesGaussianCLF:
     def pdf(x: float, mean: float, std: float) -> float:
         return (1 / (np.sqrt(2 * np.pi) * std)) * np.exp(-0.5 * ((x - mean) / std) ** 2)
 
-    def predict(self, x: Union[pd.DataFrame, np.array]) -> np.array:
+    def predict(self, x: pd.DataFrame) -> np.array:
         pdfs = np.array([BayesGaussianCLF().pdf(X, self.x_mean, self.x_std) for X in x])
         posteriors = self.priors * np.prod(pdfs, axis=2)  # shorten Bayes formula
 
@@ -35,8 +35,8 @@ class BayesGaussianCLF:
 
 
 # adding function for drawning graphics
-def decision_boundary_plot(x: Union[pd.DataFrame, np.array], y: Union[pd.Series, np.array],
-                           x_train: Union[pd.DataFrame, np.array], y_train: Union[pd.Series, np.array],
+def decision_boundary_plot(x: pd.DataFrame, y: pd.Series,
+                           x_train: pd.DataFrame, y_train: pd.Series,
                            clf: BayesGaussianCLF, feature_indexes: list[int], title: Optional[str]=None):
     feature1_name, feature2_name = x.columns[feature_indexes]
     X_feature_columns = x.values[:, feature_indexes]
