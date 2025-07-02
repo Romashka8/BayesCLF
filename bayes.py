@@ -50,7 +50,7 @@ class BayesGaussian(BayesInterface):
 		pdfs = np.array([self.pdf(X, self.x_mean, self.x_std) for X in x])
 		posteriors = self.priors * np.prod(pdfs, axis=2) # укороченная формула Байеса
 
-		return np.agmax(posteriors, axis=1)
+		return np.argmax(posteriors, axis=1)
 
 	@staticmethod
 	def pdf(x, mean, std):
